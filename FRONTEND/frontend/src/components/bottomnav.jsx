@@ -1,4 +1,3 @@
-
 import { Home, Music, Play, TrendingUp } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -9,7 +8,7 @@ const tabs = [
   { name: "Progress", href: "/progress", icon: TrendingUp },
 ]
 
-function Bottomnav() {
+function BottomNav() {
   const location = useLocation();
   const pathname = location.pathname;
 
@@ -39,4 +38,4 @@ function Bottomnav() {
   );
 }
 
-export default Bottomnav;
+export default BottomNav;

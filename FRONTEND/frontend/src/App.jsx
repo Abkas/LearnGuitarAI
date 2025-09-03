@@ -1,13 +1,18 @@
-import { useState } from 'react'
-import HomePage from './Pages/Homepage'
+import { Routes, Route } from 'react-router-dom'
+import HomePage from './pages/Homepage'
+import AnalyzerPage from './pages/Analyzer'
+import PracticePage from './pages/Practice'
+import ProgressPage from './pages/Progress'
 import './App.css'
-
 
 function App() {
   return (
-    <>
-      <HomePage />
-    </>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/analyzer" element={<AnalyzerPage />} />
+      <Route path="/practice" element={<PracticePage />} />
+      <Route path="/progress" element={<ProgressPage />} />
+    </Routes>
   )
 }
 

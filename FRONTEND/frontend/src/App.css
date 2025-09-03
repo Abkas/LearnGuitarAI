@@ -78,7 +78,6 @@
 
 
 
-
 /* Base styles (replacing @apply) */
 *, *::before, *::after {
   border-color: var(--border);
@@ -91,6 +90,52 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Minimal utility classes for colors used in pages */
+.bg-background { background: var(--background); }
+.bg-card { background: var(--card); }
+.bg-muted { background: var(--muted); }
+.text-foreground { color: var(--foreground); }
+.text-muted-foreground { color: var(--muted-foreground); }
+.text-primary { color: var(--primary); }
+.text-primary-foreground { color: var(--primary-foreground); }
+.bg-primary { background: var(--primary); }
+/* escaped class for bg-primary/10 */
+.bg-primary\/10 { background: color-mix(in oklab, var(--primary) 10%, transparent 90%); }
+.border-border { border-color: var(--border); }
+.border-primary\/20 { border-color: color-mix(in oklab, var(--primary) 20%, transparent 80%); }
+
+/* Simple shape helpers */
+.rounded-lg { border-radius: var(--radius); }
+.rounded-full { border-radius: 9999px; }
+
+/* Spacing helpers used in a few places */
+.p-1 { padding: 0.25rem; }
+.p-4 { padding: 1rem; }
+.p-6 { padding: 1.5rem; }
+.p-8 { padding: 2rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+.pt-12 { padding-top: 3rem; }
+.pb-6 { padding-bottom: 1.5rem; }
+.pb-20 { padding-bottom: 5rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-4 { margin-bottom: 1rem; }
+
+/* Layout helpers */
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.space-x-2 > :not([hidden]) ~ :not([hidden]) { margin-left: 0.5rem; }
+.space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; }
+.space-y-6 > :not([hidden]) ~ :not([hidden]) { margin-top: 1.5rem; }
+.grid { display: grid; }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.gap-2 { gap: 0.5rem; }
+.text-center { text-align: center; }
+.text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+.font-semibold { font-weight: 600; }
 
 /* Custom gradient backgrounds */
 .gradient-primary {

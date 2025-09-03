@@ -57,7 +57,7 @@ export default function HomePage() {
       </div>
 
       <div className="px-6 mb-10 space-y-4">
-        <Link href="/analyzer" className="block">
+        <Link to="/analyzer" className="block">
           <Card className="gradient-primary border-0 shadow-soft hover:shadow-glow transition-all duration-300 hover:scale-[1.02]">
             <CardContent className="p-6">
               <div className="flex items-center space-x-4">
@@ -76,7 +76,7 @@ export default function HomePage() {
           </Card>
         </Link>
 
-        <Link href="/practice" className="block">
+        <Link to="/practice" className="block">
           <Card className="bg-card hover:bg-accent/5 transition-all duration-300 border border-border shadow-soft hover:shadow-glow hover:scale-[1.01]">
             <CardContent className="p-6">
               <div className="flex items-center space-x-4">

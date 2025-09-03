@@ -1,104 +1,105 @@
 
-// import { useState } from "react"
-// import { Camera, Play, Pause, RotateCcw } from "lucide-react"
-// import { Button } from "@/components/ui/button"
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-// import { BottomNav } from "@/components/bottom-nav"
+import { useState } from "react"
+import { Camera, Play, Pause, RotateCcw } from "lucide-react"
+import { Button } from "../components/UI/button"
+import { Card, CardContent, CardHeader, CardTitle } from "../components/UI/card"
+import { Input } from "../components/UI/input"
+import BottomNav from "../components/bottomnav"
 
-// export default function PracticePage() {
-//   const [isRecording, setIsRecording] = useState(false)
-//   const [currentChord, setCurrentChord] = useState("Am")
-//   const [accuracy, setAccuracy] = useState(78)
-//   const [isCorrect, setIsCorrect] = useState(true)
+export default function PracticePage() {
+  const [isRecording, setIsRecording] = useState(false)
+  const [formValues, setFormValues] = useState({ song: "", difficulty: "beginner" })
 
-//   return (
-//     <div className="min-h-scareen bg-background pb-20">
-//       {/* Header */}
-//       <div className="px-6 pt-12 pb-6">
-//         <h1 className="text-2xl font-bold text-foreground font-[family-name:var(--font-playfair)]">Practice Mode</h1>
-//         <p className="text-muted-foreground mt-1">Real-time guitar chord detection</p>
-//       </div>
+  const handleChange = (event) => {
+    const { name, value } = event.target
+    setFormValues((prev) => ({ ...prev, [name]: value }))
+  }
 
-//       <div className="px-6 space-y-6">
-//         {/* Camera Preview */}
-//         <Card>
-//           <CardHeader className="pb-3">
-//             <CardTitle className="text-lg flex items-center">
-//               <Camera className="h-5 w-5 mr-2" />
-//               Camera View
-//             </CardTitle>
-//           </CardHeader>
-//           <CardContent>
-//             <div className="aspect-video bg-muted rounded-lg flex items-center justify-center relative overflow-hidden">
-//               <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20" />
-//               <div className="relative z-10 text-center">
-//                 <Camera className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
-//                 <p className="text-muted-foreground">{isRecording ? "Recording your guitar..." : "Camera ready"}</p>
-//               </div>
-//               {isRecording && (
-//                 <div className="absolute top-4 right-4 w-3 h-3 bg-destructive rounded-full animate-pulse" />
-//               )}
-//             </div>
-//             <div className="flex justify-center mt-4">
-//               <Button
-//                 onClick={() => setIsRecording(!isRecording)}
-//                 variant={isRecording ? "destructive" : "default"}
-//                 size="lg"
-//               >
-//                 {isRecording ? (
-//                   <>
-//                     <Pause className="h-4 w-4 mr-2" />
-//                     Stop Practice
-//                   </>
-//                 ) : (
-//                   <>
-//                     <Play className="h-4 w-4 mr-2" />
-//                     Start Practice
-//                   </>
-//                 )}
-//               </Button>
-//             </div>
-//           </CardContent>
-//         </Card>
+  const handleSetupSubmit = (event) => {
+    event.preventDefault()
+    // Simulate applying setup before starting
+    setIsRecording(false)
+  }
 
-//         {/* Practice Song */}
-//         <Card>
-//           <CardHeader className="pb-3">
-//             <CardTitle className="text-lg">Practice Song</CardTitle>
-//           </CardHeader>
-//           <CardContent>
-//             <div className="flex items-center justify-between mb-4">
-//               <div>
-//                 <h3 className="font-semibold">Yesterday - The Beatles</h3>
-//                 <p className="text-sm text-muted-foreground">Beginner Level</p>
-//               </div>
-//               <Button variant="outline" size="sm">
-//                 <RotateCcw className="h-4 w-4 mr-2" />
-//                 Restart
-//               </Button>
-//             </div>
+  return (
+    <div className="min-h-screen bg-background pb-20">
+      <div className="px-6 pt-12 pb-6">
+        <h1 className="text-2xl font-bold text-foreground font-[family-name:var(--font-playfair)]">Practice Mode</h1>
+        <p className="text-muted-foreground mt-1">Real-time guitar chord detection</p>
+      </div>
 
-//             {/* Chord Sequence */}
-//             <div className="space-y-2">
-//               <p className="text-sm text-muted-foreground">Next chords:</p>
-//               <div className="flex space-x-2">
-//                 {["Am", "F", "C", "G"].map((chord, index) => (
-//                   <div
-//                     key={index}
-//                     className={`px-3 py-2 rounded-lg font-semibold ${
-//                       index === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-//                     }`}
-//                   >
-//                     {chord}
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-//           </CardContent>
-//         </Card>
-//       </div>
+      <div className="px-6 space-y-6">
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Session Setup</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form className="grid grid-cols-1 gap-3 sm:grid-cols-2" onSubmit={handleSetupSubmit}>
+              <div className="sm:col-span-1">
+                <label className="block text-sm text-muted-foreground mb-1" htmlFor="song">Song</label>
+                <Input id="song" name="song" placeholder="e.g. Yesterday - The Beatles" value={formValues.song} onChange={handleChange} />
+              </div>
+              <div className="sm:col-span-1">
+                <label className="block text-sm text-muted-foreground mb-1" htmlFor="difficulty">Difficulty</label>
+                <select id="difficulty" name="difficulty" value={formValues.difficulty} onChange={handleChange} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                </select>
+              </div>
+              <div className="sm:col-span-2 flex justify-end">
+                <Button type="submit">Apply</Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
 
-//       <BottomNav />
-//     </div>
-//   )
-// }
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center">
+              <Camera className="h-5 w-5 mr-2" />
+              Camera View
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20" />
+              <div className="relative z-10 text-center">
+                <Camera className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
+                <p className="text-muted-foreground">{isRecording ? "Recording your guitar..." : "Camera ready"}</p>
+              </div>
+              {isRecording && (
+                <div className="absolute top-4 right-4 w-3 h-3 bg-destructive rounded-full animate-pulse" />
+              )}
+            </div>
+            <div className="flex justify-center mt-4 gap-3">
+              <Button
+                onClick={() => setIsRecording(!isRecording)}
+                variant={isRecording ? "destructive" : "default"}
+                size="lg"
+              >
+                {isRecording ? (
+                  <>
+                    <Pause className="h-4 w-4 mr-2" />
+                    Stop Practice
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-4 w-4 mr-2" />
+                    Start Practice
+                  </>
+                )}
+              </Button>
+              <Button variant="outline" size="lg" onClick={() => setIsRecording(false)}>
+                <RotateCcw className="h-4 w-4 mr-2" />
+                Reset
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <BottomNav />
+    </div>
+  )
+}
