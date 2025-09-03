@@ -1,42 +1,111 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+@import "tailwindcss";
+@import "tw-animate-css";
+
+
+
+:root {
+  /* Enhanced color palette with warmer, more vibrant tones for better user experience */
+  --background: oklch(0.99 0.005 120);
+  --foreground: oklch(0.15 0.02 240);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.02 240);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.02 240);
+  --primary: oklch(0.52 0.18 158);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.62 0.15 158);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.96 0.01 120);
+  --muted-foreground: oklch(0.45 0.02 240);
+  --accent: oklch(0.68 0.16 200);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.58 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.88 0.02 120);
+  --input: oklch(0.98 0.01 120);
+  --ring: oklch(0.52 0.18 158 / 0.3);
+  --chart-1: oklch(0.52 0.18 158);
+  --chart-2: oklch(0.62 0.15 158);
+  --chart-3: oklch(0.68 0.16 200);
+  --chart-4: oklch(0.58 0.22 25);
+  --chart-5: oklch(0.65 0.18 35);
+  --radius: 0.75rem;
+  --sidebar: oklch(0.98 0.01 120);
+  --sidebar-foreground: oklch(0.15 0.02 240);
+  --sidebar-primary: oklch(0.52 0.18 158);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.62 0.15 158);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.88 0.02 120);
+  --sidebar-ring: oklch(0.52 0.18 158 / 0.3);
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.dark {
+  /* Improved dark mode with better contrast and warmer tones */
+  --background: oklch(0.08 0.01 240);
+  --foreground: oklch(0.95 0.01 120);
+  --card: oklch(0.12 0.02 240);
+  --card-foreground: oklch(0.95 0.01 120);
+  --popover: oklch(0.08 0.01 240);
+  --popover-foreground: oklch(0.95 0.01 120);
+  --primary: oklch(0.62 0.15 158);
+  --primary-foreground: oklch(0.08 0.01 240);
+  --secondary: oklch(0.18 0.02 240);
+  --secondary-foreground: oklch(0.95 0.01 120);
+  --muted: oklch(0.18 0.02 240);
+  --muted-foreground: oklch(0.65 0.02 120);
+  --accent: oklch(0.72 0.14 200);
+  --accent-foreground: oklch(0.08 0.01 240);
+  --destructive: oklch(0.62 0.2 25);
+  --destructive-foreground: oklch(0.95 0.01 120);
+  --border: oklch(0.22 0.02 240);
+  --input: oklch(0.18 0.02 240);
+  --ring: oklch(0.62 0.15 158 / 0.4);
+  --chart-1: oklch(0.62 0.15 158);
+  --chart-2: oklch(0.72 0.12 158);
+  --chart-3: oklch(0.72 0.14 200);
+  --chart-4: oklch(0.62 0.2 25);
+  --chart-5: oklch(0.68 0.16 35);
+  --sidebar: oklch(0.12 0.02 240);
+  --sidebar-foreground: oklch(0.95 0.01 120);
+  --sidebar-primary: oklch(0.62 0.15 158);
+  --sidebar-primary-foreground: oklch(0.08 0.01 240);
+  --sidebar-accent: oklch(0.18 0.02 240);
+  --sidebar-accent-foreground: oklch(0.95 0.01 120);
+  --sidebar-border: oklch(0.22 0.02 240);
+  --sidebar-ring: oklch(0.62 0.15 158 / 0.4);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+
+
+/* Base styles (replacing @apply) */
+*, *::before, *::after {
+  border-color: var(--border);
+  outline-color: color-mix(in oklab, var(--ring) 50%, transparent 50%);
+}
+body {
+  background: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+
+/* Custom gradient backgrounds */
+.gradient-primary {
+  background: linear-gradient(135deg, oklch(0.52 0.18 158), oklch(0.62 0.15 158));
 }
 
-.card {
-  padding: 2em;
+.gradient-accent {
+  background: linear-gradient(135deg, oklch(0.68 0.16 200), oklch(0.62 0.15 158));
 }
 
-.read-the-docs {
-  color: #888;
+/* Enhanced shadows */
+.shadow-soft {
+  box-shadow: 0 4px 20px -2px oklch(0.52 0.18 158 / 0.1);
+}
+
+.shadow-glow {
+  box-shadow: 0 0 30px -5px oklch(0.52 0.18 158 / 0.2);
 }
