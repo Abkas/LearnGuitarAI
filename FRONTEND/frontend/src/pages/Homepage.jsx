@@ -1,5 +1,5 @@
 import { Upload, Play, Music, Camera, TrendingUp, Sparkles, Zap } from "lucide-react";
-import { Card, CardContent } from "../components/ui/card";
+import { Card, CardContent } from "../components/UI/card";
 import Bottomnav from "../components/bottomnav";
 import { Link } from "react-router-dom";
 
