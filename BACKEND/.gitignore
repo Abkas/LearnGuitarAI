@@ -1,0 +1,46 @@
+# Python virtual environments
+venv/
+.env/
+*.env
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Test and coverage
+htmlcov/
+.coverage
+.pytest_cache/
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Database files
+*.sqlite3
+*.db
+
+# Secrets
+*.key
+*.pem
+.env
+__pycache__/
+venv/
+.vscode/
