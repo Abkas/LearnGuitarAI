@@ -1,2 +1,4 @@
 # Ignore the NORMAL MODELS folder
 NORMAL MODELS/
+.venv
+.vscode/
