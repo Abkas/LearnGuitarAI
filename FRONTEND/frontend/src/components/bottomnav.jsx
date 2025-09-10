@@ -1,4 +1,4 @@
-import { Home, Music, Play, TrendingUp } from "lucide-react";
+import { Home, Music, Play, TrendingUp, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const tabs = [
@@ -6,6 +6,7 @@ const tabs = [
   { name: "Analyzer", href: "/analyzer", icon: Music },
   { name: "Practice", href: "/practice", icon: Play },
   { name: "Progress", href: "/progress", icon: TrendingUp },
+  { name: "Account", href: "/account", icon: User },
 ]
 
 function BottomNav() {

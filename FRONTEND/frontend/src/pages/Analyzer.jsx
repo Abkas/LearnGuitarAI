@@ -6,6 +6,7 @@ import { Button } from "../components/UI/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/UI/card"
 import { Input } from "../components/UI/input"
 import BottomNav from "../components/bottomnav"
+import BackButton from "../components/UI/BackButton"
 
 const dummyChords = ["Am", "F", "C", "G", "Em", "Dm"]
 const dummyLyrics = [
@@ -54,7 +55,8 @@ export default function AnalyzerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background pb-20 relative">
+      <BackButton />
       {/* Header */}
       <div className="px-6 pt-12 pb-6">
         <h1 className="text-2xl font-bold text-foreground font-[family-name:var(--font-playfair)]">Song Analyzer</h1>
