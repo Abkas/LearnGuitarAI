@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/UI/card"
 import { Input } from "../components/UI/input"
 import { Button } from "../components/UI/button"
 import BottomNav from "../components/bottomnav"
+import TopNav from "../components/topnav"
 // import BackButton from "../components/UI/BackButton"
 
 const achievements = [
@@ -29,6 +30,7 @@ export default function ProgressPage() {
 
   return (
     <div className="min-h-screen bg-background pb-20 relative">
+    <TopNav />
   {/* <BackButton /> */}
       <div className="px-6 pt-12 pb-6">
         <h1 className="text-2xl font-bold text-foreground font-[family-name:var(--font-playfair)]">Your Progress</h1>

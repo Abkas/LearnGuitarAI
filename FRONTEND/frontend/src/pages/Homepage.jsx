@@ -2,6 +2,8 @@ import { Upload, Play, Music, Camera, TrendingUp, Sparkles, Zap } from "lucide-r
 import { Card, CardContent } from "../components/UI/card";
 import Bottomnav from "../components/bottomnav";
 import { Link, useNavigate } from "react-router-dom";
+import TopNav from "../components/topnav";
+
 
 const features = [
   {
@@ -36,11 +38,13 @@ const features = [
 
 export default function HomePage() {
   
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
 
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30 pb-20 relative">
+  {/* ArrowLeft button removed */}
+  {<TopNav/>}
       <div className="px-6 pt-16 pb-8 text-center">
         <div className="flex items-center justify-center mb-6">
           <div className="relative">

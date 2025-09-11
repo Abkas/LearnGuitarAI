@@ -5,6 +5,7 @@ import { Button } from "../components/UI/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/UI/card"
 import { Input } from "../components/UI/input"
 import BottomNav from "../components/bottomnav"
+import TopNav from "../components/topnav";
 
 
 export default function AnalyzerPage() {
@@ -41,6 +42,7 @@ export default function AnalyzerPage() {
 
   return (
     <div className="min-h-screen bg-background pb-20 relative">
+      {<TopNav/>}
   {/* <BackButton /> */}
       {/* Header */}
       <div className="px-6 pt-12 pb-6">
