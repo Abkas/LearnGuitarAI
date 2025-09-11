@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Input } from "../components/UI/input";
 import { Button } from "../components/UI/button";
-import BackButton from "../components/UI/BackButton";
 
 export default function Account() {
   const [mode, setMode] = useState("login");
@@ -10,7 +9,7 @@ export default function Account() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-br from-background via-background to-muted/30 relative">
-      <BackButton />
+  {/* <BackButton /> */}
       <div className="w-full max-w-sm bg-card border border-border rounded-xl p-6 shadow-soft">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-semibold text-foreground">

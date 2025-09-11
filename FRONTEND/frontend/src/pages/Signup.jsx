@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Input } from "../components/UI/input";
 import { Button } from "../components/UI/button";
-import BackButton from "../components/UI/BackButton";
+// import BackButton from "../components/UI/BackButton";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-br from-background via-background to-muted/30 relative">
-      <BackButton />
+  {/* <BackButton /> */}
       <div className="w-full max-w-sm bg-card border border-border rounded-xl p-6 shadow-soft">
         <h1 className="text-2xl font-semibold text-foreground mb-1">Create account</h1>
         <p className="text-sm text-muted-foreground mb-6">Start your guitar journey</p>

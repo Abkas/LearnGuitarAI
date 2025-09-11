@@ -1,4 +1,4 @@
-import { Upload, Play, Music, Camera, TrendingUp, Sparkles, Zap, ArrowLeft } from "lucide-react";
+import { Upload, Play, Music, Camera, TrendingUp, Sparkles, Zap } from "lucide-react";
 import { Card, CardContent } from "../components/UI/card";
 import Bottomnav from "../components/bottomnav";
 import { Link, useNavigate } from "react-router-dom";
@@ -35,16 +35,12 @@ const features = [
 ]
 
 export default function HomePage() {
+  
   const navigate = useNavigate();
+
   return (
+
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30 pb-20 relative">
-      <button
-        onClick={() => navigate(-1)}
-        className="absolute top-4 left-4 inline-flex items-center justify-center h-9 w-9 rounded-md border border-border bg-card text-foreground hover:bg-accent/20 transition-colors shadow-soft"
-        aria-label="Go back"
-      >
-        <ArrowLeft className="h-5 w-5" />
-      </button>
       <div className="px-6 pt-16 pb-8 text-center">
         <div className="flex items-center justify-center mb-6">
           <div className="relative">
