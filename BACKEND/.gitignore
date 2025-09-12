@@ -44,3 +44,4 @@ coverage.xml
 __pycache__/
 venv/
 .vscode/
+.env
