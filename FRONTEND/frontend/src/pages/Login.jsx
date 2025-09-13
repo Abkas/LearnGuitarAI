@@ -1,31 +1,34 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { Input } from "../components/UI/input";
-import { Button } from "../components/UI/button";
+import { useState } from "react"
+import { Input } from "../components/UI/input"
+import { Button } from "../components/UI/button"
+import { login } from "../utility/userApi"
 
 export default function Login() {
-  const navigate = useNavigate();
-  const [from, setFrom] = useState('/');
+  const navigate = useNavigate()
+  const [from, setFrom] = useState('/')
   useState(() => {
-    const prev = window.sessionStorage.getItem('prevLocation');
+    const prev = window.sessionStorage.getItem('prevLocation')
     if (prev) setFrom(prev);
   }, []);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      // TODO: replace with real auth API
-      await new Promise((r) => setTimeout(r, 600));
-      navigate("/");
-    } finally {
-      setLoading(false);
-    }
+async function handleSubmit(e) {
+  e.preventDefault()
+  setLoading(true)
+  try {
+    const data = await login({ email, password })
+    // Store the access token (for example, in localStorage)
+    localStorage.setItem("access_token", data.access_token)
+    navigate("/")
+  } catch (err) {
+    alert(err.message)
+  } finally {
+    setLoading(false)
   }
-
+}
   return (
     <div className="min-h-screen flex items-center justify-center px-6 relative bg-gradient-to-br from-primary/10 via-background to-accent/10">
       {/* Custom guitar SVG background */}

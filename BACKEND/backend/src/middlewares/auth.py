@@ -1,11 +1,16 @@
 from passlib.context import CryptContext
 from jose import jwt
 from datetime import datetime, timedelta
-import os
 from dotenv import load_dotenv
+from fastapi import Depends
+from fastapi.security import OAuth2PasswordBearer
+import os
 
-load_dotenv()
+load_dotenv(dotenv_path="d:/GUITARIFY/BACKEND/backend/src/.env")
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+#HASH PASSOWRD
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password: str) -> str:
@@ -28,3 +33,13 @@ def create_access_token(data: dict , expires_delta: timedelta = None) -> str:
 
     return encoded_jwt
 
+
+def get_current_user(token: str = Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get("sub")
+        if email is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        return email
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
