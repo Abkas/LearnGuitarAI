@@ -19,3 +19,7 @@ except Exception as e:
 def get_users_collection():
     db = client["users"]  
     return db["users"]
+
+def get_songs_collection():
+    db = client["songs"]  
+    return db["songs"]

@@ -9,25 +9,33 @@ import Account from './pages/Account'
 import Profile from './pages/Profile'
 import AnalyzerResult from './pages/AnalyzerResult'
 import './App.css'
+import { Toaster } from 'react-hot-toast'
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/analyzer" element={<AnalyzerPage />} />
-      <Route path="/analyzer-result" element={<AnalyzerResult/>} />
-      <Route path="/practice" element={<PracticePage />} />
-      <Route path="/progress" element={<ProgressPage />} />
-
-
-
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/account" element={<Account />} />
-      <Route path="/profile" element={<Profile />} />
-
-
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/analyzer" element={<AnalyzerPage />} />
+        <Route path="/analyzer-result" element={<AnalyzerResult/>} />
+        <Route path="/practice" element={<PracticePage />} />
+        <Route path="/progress" element={<ProgressPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/account" element={<Account />} />
+        <Route path="/profile" element={<Profile />} />
+      </Routes>
+      <Toaster 
+        position="top-right" 
+        reverseOrder={false}
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: 'var(--background)',
+            color: 'var(--foreground)',
+          },
+          }}/>
+    </>
   )
 }
 

@@ -17,15 +17,24 @@ class UserUpdate(BaseModel):
     password: Optional[str] = None
 
 @router.post('/signup')
-def signup_user(user: User):
-    users = get_users_collection()
-    if users.find_one({'email': user.email}):
-        raise HTTPException(status_code = 400, detail = 'Email already exists')
-    
-    user_dict = user.dict()
-    user_dict['password'] = hash_password(user.password)
-    users.insert_one(user_dict)
-    return {'msg':'User created sucessfully'}
+async def signup_user(user: User):
+    try:
+        users = get_users_collection()
+        
+        if users.find_one({'email': user.email}):
+            raise HTTPException(status_code=400, detail='Email already exists')
+        
+        user_dict = user.dict()
+        user_dict['password'] = hash_password(user.password)
+        result = users.insert_one(user_dict)
+        
+        if not result.inserted_id:
+            raise HTTPException(status_code=500, detail='Failed to create user')
+        
+        return {'msg': 'User created successfully'}
+    except Exception as e:
+        print(f"Signup Error: {str(e)}")  
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post('/login')

@@ -5,8 +5,9 @@ import { Button } from "../components/UI/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/UI/card"
 import { Input } from "../components/UI/input"
 import BottomNav from "../components/bottomnav"
-import TopNav from "../components/topnav";
-
+import TopNav from "../components/topnav"
+import { uploadSong, uploadSongFromUrl } from "../utility/songApi";
+import toast from 'react-hot-toast'
 
 export default function AnalyzerPage() {
   const [uploadMethod, setUploadMethod] = useState("file")
@@ -29,15 +30,33 @@ export default function AnalyzerPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      navigate("/analyzer-result");
-    }, 2000);
-  }
 
-  const handleAnalyze = () => {
-    setHasAnalyzed(true)
+    try {
+      let response;
+      
+      if (uploadMethod === "file" && formData.audioFile) {
+        response = await uploadSong(formData.audioFile)
+      } else if (uploadMethod === "url" && formData.songUrl) {
+        response = await uploadSongFromUrl(formData.songUrl)
+      }
+
+      // If upload successful, show success toast and navigate
+      if (response?.song_info?.id) {
+        toast.success('Song uploaded successfully!')
+        navigate("/analyzer-result", { 
+          state: { 
+            songId: response.song_info.id,
+            title: response.song_info.title
+          } 
+        });
+      }
+
+    } catch (error) {
+      console.error("Upload failed:", error)
+      toast.error(error.message || 'Failed to upload song. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
