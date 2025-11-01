@@ -11,11 +11,17 @@ class PyObjectId(ObjectId):
         cls,
         _source_type: Any,
         _handler: Any
-    ) -> Any:
+    ) -> Dict[str, Any]:
         return {
-            "type": "string",
-            "deserialize": lambda x: ObjectId(x) if ObjectId.is_valid(x) else x,
-            "serialize": lambda x: str(x)
+            'type': 'str',
+            'serialization': {
+                'type': 'str',
+                'return_type': 'str'
+            },
+            'validation': {
+                'before': lambda x: ObjectId(x) if isinstance(x, str) else x,
+                'strict': True
+            }
         }
 
 class SongBase(BaseModel):
@@ -46,7 +52,15 @@ class Song(SongBase):
     processed: bool = False  # Indicates if AI analysis is complete
     user_id: Optional[PyObjectId] = None  # Reference to the user who uploaded the song
 
-    class Config:
-        json_encoders = {ObjectId: str}
-        allow_population_by_field_name = True
-        arbitrary_types_allowed = True
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "populate_by_name": True,
+        "json_schema_extra": {
+            "example": {
+                "title": "Yesterday",
+                "artist": "The Beatles",
+                "duration": 180.5,
+                "file_path": "/uploads/yesterday.mp3"
+            }
+        }
+    }

@@ -69,11 +69,6 @@ export default function AnalyzerPage() {
         <p className="text-muted-foreground mt-1">Upload a song to get AI-powered chord analysis</p>
       </div>
 
-      <div className="px-6 pt-12 pb-6">
-        <h1 className="text-2xl font-bold text-foreground font-[family-name:var(--font-playfair)]">Song Analyzer</h1>
-        <p className="text-muted-foreground mt-1">Upload a song to get AI-powered chord analysis</p>
-      </div>
-
       {/* Upload Section */}
       <div className="px-6 space-y-6">
         {/* Upload Method Toggle */}
