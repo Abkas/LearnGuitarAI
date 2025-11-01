@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { checkTokenValid, logout } from "../utility/userApi";
+import { verifyToken, logout } from "../utility/userApi";
 
 export default function TopNav() {
   const navigate = useNavigate();
@@ -9,17 +9,15 @@ export default function TopNav() {
 
   useEffect(() => {
     async function checkAuth() {
-      const userData = await checkTokenValid();
-      setUser(userData); // userData will be false if not authorized, or user info if authorized
+      const { isValid, user } = await verifyToken();
+      setUser(isValid ? user : null);
     }
+    // Check auth only when component mounts
     checkAuth();
-  }, []);
+  }, [])
 
   function handleLogout() {
-    logout();
-    setUser(null);
-    setShowMenu(false);
-    navigate("/");
+    logout()
   }
 
   return (
@@ -41,7 +39,7 @@ export default function TopNav() {
         <div className="flex items-center gap-3 relative">
           <span className="text-primary font-semibold">Welcome, {user.username || "User"}</span>
           <button
-            className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white font-bold text-lg focus:outline-none"
+            className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-lg focus:outline-none"
             onClick={() => setShowMenu((v) => !v)}
             aria-label="User menu"
           >
@@ -50,7 +48,7 @@ export default function TopNav() {
           {showMenu && (
             <div className="absolute right-0 top-12 bg-white border rounded shadow p-2 z-10">
               <button
-                className="text-red-600 font-semibold px-4 py-2 hover:bg-red-50 rounded w-full text-left"
+                className="bg-red-600 text-white font-semibold px-4 py-2 hover:bg-red-700 w-full text-left transition-colors"
                 onClick={handleLogout}
               >
                 Logout

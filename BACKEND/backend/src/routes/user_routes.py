@@ -11,6 +11,18 @@ class UserLogin(BaseModel):
     email : str
     password : str
 
+@router.get("/verify-token")
+async def verify_token(current_user: dict = Depends(get_current_user)):
+    # If we get here, token is valid as get_current_user already verified it
+    users = get_users_collection()
+    user = users.find_one({"email": current_user})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user["_id"] = str(user["_id"])
+    user.pop("password", None)
+    return user
+
 class UserUpdate(BaseModel):
     username: Optional[str] = None
     email: Optional[EmailStr] = None

@@ -28,27 +28,48 @@ export async function login({ email, password }) {
   }
 }
 
-// Logout: Remove token from localStorage
+// Logout: Remove token from localStorage and clear user session
 export function logout() {
   localStorage.removeItem("access_token");
+  // Clear any other stored user data
+  sessionStorage.clear();
+  // Force reload user state
+  window.dispatchEvent(new Event('storage'));
+  // Reload the page
+  window.location.reload();
 }
 
-// Check Authorization: Returns true if token exists
-export function isAuthorized() {
+// Verify token with backend and get user data
+export async function verifyToken() {
   const token = localStorage.getItem("access_token");
-  return !!token;
-}
-
-export async function checkTokenValid() {
-  const token = localStorage.getItem("access_token");
-  if (!token) return false;
+  if (!token) return { isValid: false, error: "No token found" };
 
   try {
     const response = await axiosInstance.get("/get-user", {
       headers: { Authorization: `Bearer ${token}` }
     });
-    return response.data;
-  } catch {
-    return false;
+    return {
+      isValid: true,
+      user: response.data
+    };
+  } catch (error) {
+    // If token is invalid, clear it from storage
+    if (error.response?.status === 401) {
+      localStorage.removeItem("access_token");
+    }
+    return {
+      isValid: false,
+      error: error.response?.data?.detail || "Token verification failed"
+    }
   }
 }
+
+// Check Authorization: Actually verifies token with backend
+export async function isAuthorized() {
+  const token = localStorage.getItem("access_token")
+  if (!token) return false
+  
+  const { isValid } = await verifyToken()
+  return isValid
+}
+
