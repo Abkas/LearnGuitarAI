@@ -117,3 +117,38 @@ async def get_lyrics(
         "song_id": song_id,
         "status": "processing"
     }
+
+
+@router.post("/lyrics_generator/{song_id}")
+async def analyze_song(
+    song_id: str,
+    background_tasks: BackgroundTasks,
+    current_email: str = Depends(get_current_user)
+):
+    """Trigger lyrics/analysis generation for an existing song.
+
+    This endpoint enqueues the same `generate_lyrics` helper used elsewhere.
+    It requires authentication and verifies ownership of the song before
+    scheduling background work.
+    """
+    users_collection = get_users_collection()
+    db_user = users_collection.find_one({"email": current_email})
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user_info = db_user
+    user_info["_id"] = str(user_info["_id"])
+
+    songs_collection = get_songs_collection()
+    song = songs_collection.find_one({
+        "_id": ObjectId(song_id),
+        "user_id": ObjectId(user_info["_id"])
+    })
+
+    if not song:
+        raise HTTPException(status_code=404, detail="Song not found or not owned by user")
+
+    # Schedule background processing and return accepted
+    background_tasks.add_task(generate_lyrics, song_id, user_info)
+
+    return {"message": "Analysis started", "song_id": song_id, "status": "processing"}
