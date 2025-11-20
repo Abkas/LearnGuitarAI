@@ -48,3 +48,13 @@ export async function getSongAnalysis(songId) {
     throw new Error(error.response?.data?.detail || error.message || "Failed to get song analysis")
   }
 }
+
+// Get song lyrics: GET /songs/{songId}/lyrics
+export async function getSongLyrics(songId) {
+  try {
+    const response = await axiosInstance.get(`/songs/${songId}/lyrics`)
+    return response.data
+  } catch (error) {
+    throw new Error(error.response?.data?.detail || error.message || "Failed to get song lyrics")
+  }
+}

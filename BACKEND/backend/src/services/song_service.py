@@ -1,5 +1,6 @@
 from fastapi import HTTPException, BackgroundTasks
 from typing import Dict, Any
+from fastapi.responses import FileResponse
 from bson import ObjectId
 import os
 import shutil
@@ -102,11 +103,11 @@ def get_song_lyrics(song_id: str, current_email: str, regenerate: bool = False) 
         raise HTTPException(status_code=404, detail="Song not found")
 
     # If lyrics exist and no regeneration requested, return them
-    if song.get("processed") and song.get("analysis") and not regenerate:
+    if song.get("processed") and song.get("lyrics") and not regenerate:
         return {
             "message": "Lyrics retrieved successfully",
             "song_id": song_id,
-            "analysis": song["analysis"]
+            "lyrics": song["lyrics"]
         }
 
     # If regeneration requested or no lyrics exist, generate new ones
@@ -172,3 +173,36 @@ def get_song_analysis(song_id: str, current_email: str) -> Dict[str, Any]:
         return {"message": "No analysis available yet", "song_id": song_id, "processed": song.get("processed", False)}
 
     return {"message": "Analysis retrieved", "song_id": song_id, "analysis": analysis}
+
+
+def get_song_audio(song_id: str, current_email: str):
+    
+    users_collection = get_users_collection()
+    db_user = users_collection.find_one({"email": current_email})
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user_info = db_user
+    user_info["_id"] = str(user_info["_id"])
+
+    songs_collection = get_songs_collection()
+    song = songs_collection.find_one({
+        "_id": ObjectId(song_id),
+        "user_id": user_info["_id"]
+    })
+
+    if not song:
+        raise HTTPException(status_code=404, detail="Song not found or not owned by user")
+
+    file_path = song.get("file_path")
+    if not file_path or not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Audio file not found")
+
+    return FileResponse(
+        file_path,
+        media_type="audio/mpeg",
+        headers={
+            "Accept-Ranges": "bytes",
+            "Content-Disposition": f'inline; filename="{song.get("title", "song")}.mp3"'
+        }
+    )

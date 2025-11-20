@@ -41,12 +41,15 @@ export default function AnalyzerPage() {
       }
 
       // If upload successful, show success toast and navigate
-      if (response?.song_info?.id) {
-        toast.success('Song uploaded successfully!')
+      if (response?.song?._id) {
+        // Show backend message in toast
+        const message = response?.message || 'Song uploaded successfully!'
+        toast.success(message)
+        
         navigate("/analyzer-result", { 
           state: { 
-            songId: response.song_info.id,
-            title: response.song_info.title
+            songId: response.song._id,
+            title: response.song.title
           } 
         });
       }

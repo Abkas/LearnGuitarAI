@@ -1,4 +1,5 @@
 from fastapi import APIRouter, UploadFile, File, Depends, BackgroundTasks
+from fastapi.responses import FileResponse
 from ..middlewares.auth import get_current_user
 from ..middlewares.lyrics_generator import generate_lyrics
 from ..services import song_service
@@ -16,7 +17,7 @@ async def upload_song(
     return song_service.upload_song_file(file.file, file.filename, current_email, background_tasks)
 
 
-@router.get("/lyrics/{song_id}")
+@router.get("/{song_id}/lyrics")
 async def get_lyrics(
     song_id: str,
     regenerate: bool = False,
@@ -46,3 +47,11 @@ async def get_song_analysis(
     current_email: str = Depends(get_current_user)
 ):
     return song_service.get_song_analysis(song_id, current_email)
+
+
+@router.get("/{song_id}/audio")
+async def get_song_audio(
+    song_id: str,
+    current_email: str = Depends(get_current_user)
+):
+    return song_service.get_song_audio(song_id, current_email)
