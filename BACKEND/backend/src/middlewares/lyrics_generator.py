@@ -2,6 +2,7 @@ import os
 import traceback
 from bson import ObjectId
 from ..core.database import get_songs_collection
+from .chord_generator import generate_chords
 
 # Demo song output - Full length example with realistic timestamps
 DEMO_LYRICS_OUTPUT = {
@@ -137,10 +138,13 @@ def generate_lyrics(song_id: str, current_user: dict):
                 {"$set": {
                     "processed": True,
                     "lyrics": lyrics_obj,
-                    "chords": None,  # To be filled by chord detection
                     "strumming": None  # To be filled by strumming detection
                 }}
             )
+            
+            print(f"generate_lyrics: triggering chord generation for song_id={song_id}")
+            generate_chords(song_id, current_user)
+            
             return transcription
         else:
             print("generate_lyrics: no valid result from custom model")

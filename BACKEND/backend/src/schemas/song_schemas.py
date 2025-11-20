@@ -11,7 +11,10 @@ class SongUploadResponse(BaseModel):
 class LyricsResponse(BaseModel):
     message: str
     song_id: str
-    analysis: Optional[Dict[str, Any]] = None
+    lyrics: Optional[Dict[str, Any]] = None
+    chords: Optional[Dict[str, Any]] = None
+    strumming: Optional[Dict[str, Any]] = None
+    audio_url: Optional[str] = None
     status: Optional[str] = None
 
 

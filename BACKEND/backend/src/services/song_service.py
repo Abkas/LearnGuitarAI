@@ -140,6 +140,8 @@ def get_song_lyrics(song_id: str, current_email: str, regenerate: bool = False) 
             "message": "Lyrics retrieved successfully",
             "song_id": song_id,
             "lyrics": song["lyrics"],
+            "chords": song.get("chords"),
+            "strumming": song.get("strumming"),
             "audio_url": song.get("file_path")  # Cloudinary URL
         }
 

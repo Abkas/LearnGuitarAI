@@ -15,23 +15,29 @@ export default function AnalyzerResult() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [lyrics, setLyrics] = useState(null);
+  const [chords, setChords] = useState(null);
+  const [strumming, setStrumming] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentLyricIndex, setCurrentLyricIndex] = useState(0);
+  const [currentChordIndex, setCurrentChordIndex] = useState(0);
+  const [currentStrumIndex, setCurrentStrumIndex] = useState(0);
   const [audioUrl, setAudioUrl] = useState("");
   
   const audioRef = useRef(null);
 
-  // Fetch lyrics on component mount
+  // Fetch lyrics, chords, and strumming on component mount
   useEffect(() => {
     const fetchLyrics = async () => {
       try {
         setLoading(true);
         const response = await getSongLyrics(songId);
         setLyrics(response.lyrics);
+        setChords(response.chords);
+        setStrumming(response.strumming);
         setAudioUrl(response.audio_url || "");
       } catch (error) {
-        console.error("Failed to fetch lyrics:", error);
-        toast.error("Failed to load lyrics");
+        console.error("Failed to fetch song data:", error);
+        toast.error("Failed to load song data");
       } finally {
         setLoading(false);
       }
@@ -45,7 +51,7 @@ export default function AnalyzerResult() {
   // Update current time as audio plays
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio || !audioUrl) return;
 
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
     const handleLoadedMetadata = () => setDuration(audio.duration);
@@ -60,7 +66,7 @@ export default function AnalyzerResult() {
       audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
       audio.removeEventListener("ended", handleEnded);
     };
-  }, []);
+  }, [audioUrl]);
 
   // Sync lyrics with current time
   useEffect(() => {
@@ -75,6 +81,34 @@ export default function AnalyzerResult() {
       setCurrentLyricIndex(currentIndex);
     }
   }, [currentTime, lyrics]);
+
+  // Sync chords with current time
+  useEffect(() => {
+    if (!chords?.segments) return;
+
+    const currentIndex = chords.segments.findIndex((segment, index) => {
+      const nextSegment = chords.segments[index + 1];
+      return currentTime >= segment.start && (!nextSegment || currentTime < nextSegment.start);
+    });
+
+    if (currentIndex !== -1) {
+      setCurrentChordIndex(currentIndex);
+    }
+  }, [currentTime, chords]);
+
+  // Sync strumming pattern with current time
+  useEffect(() => {
+    if (!strumming?.segments) return;
+
+    const currentIndex = strumming.segments.findIndex((segment, index) => {
+      const nextSegment = strumming.segments[index + 1];
+      return currentTime >= segment.start && (!nextSegment || currentTime < nextSegment.start);
+    });
+
+    if (currentIndex !== -1) {
+      setCurrentStrumIndex(currentIndex);
+    }
+  }, [currentTime, strumming]);
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
@@ -112,8 +146,30 @@ export default function AnalyzerResult() {
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
-  // Get current chord (placeholder for now)
-  const currentChord = "C"; // TODO: Get from chord analysis
+  // Get current and next chords
+  const currentChord = chords?.segments?.[currentChordIndex]?.chord || "—";
+  const nextChord = chords?.segments?.[currentChordIndex + 1]?.chord || "—";
+
+  // Get current strumming pattern and convert to arrows
+  const currentPattern = strumming?.segments?.[currentStrumIndex]?.pattern || "";
+  const strumArray = currentPattern.split(" ").filter(s => s.length > 0);
+  
+  // Calculate which strum arrow should be highlighted based on time within segment
+  const getCurrentStrumBeat = () => {
+    if (!strumming?.segments?.[currentStrumIndex] || !strumming.bpm) return 0;
+    
+    const segment = strumming.segments[currentStrumIndex];
+    const timeInSegment = currentTime - segment.start;
+    const beatDuration = 60 / strumming.bpm; // Duration of one beat in seconds
+    const beatsPerPattern = strumArray.length;
+    const patternDuration = beatDuration * beatsPerPattern;
+    
+    // Calculate which beat we're on within the pattern
+    const beatInPattern = Math.floor((timeInSegment % patternDuration) / beatDuration);
+    return beatInPattern % beatsPerPattern;
+  };
+
+  const currentBeat = getCurrentStrumBeat();
 
   return (
     <div className="min-h-screen bg-background pb-32 relative flex flex-col">
@@ -162,13 +218,66 @@ export default function AnalyzerResult() {
           </div>
         </Card>
 
-        {/* Chord Display */}
+        {/* Chord Display - Shows Current and Next */}
         <Card className="p-6 bg-gradient-to-r from-primary/10 to-primary/5">
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground mb-2">Current Chord</p>
-            <div className="inline-block bg-primary text-primary-foreground px-8 py-4 rounded-xl text-4xl font-bold shadow-lg">
-              {currentChord}
+          <div className="flex items-center justify-center gap-8">
+            {/* Current Chord */}
+            <div className="text-center">
+              <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wide">Current</p>
+              <div className="bg-primary text-primary-foreground px-8 py-4 rounded-xl text-5xl font-bold shadow-lg transform transition-transform hover:scale-105">
+                {currentChord}
+              </div>
             </div>
+            
+            {/* Arrow */}
+            <div className="text-muted-foreground text-2xl">→</div>
+            
+            {/* Next Chord */}
+            <div className="text-center">
+              <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wide">Next</p>
+              <div className="bg-muted text-foreground px-6 py-3 rounded-xl text-3xl font-bold border-2 border-border opacity-70">
+                {nextChord}
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Strumming Pattern Display */}
+        <Card className="p-6 bg-gradient-to-r from-secondary/10 to-secondary/5">
+          <div className="text-center space-y-4">
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Strumming Pattern</p>
+              {strumming?.bpm && (
+                <p className="text-sm text-muted-foreground mt-1">BPM: {strumming.bpm}</p>
+              )}
+            </div>
+            
+            {/* Strumming Arrows */}
+            <div className="flex items-center justify-center gap-4">
+              {strumArray.length > 0 ? (
+                strumArray.map((strum, index) => (
+                  <div
+                    key={index}
+                    className={`text-4xl font-bold transition-all duration-150 ${
+                      currentBeat === index
+                        ? "text-primary scale-125 drop-shadow-lg"
+                        : "text-muted-foreground/40 scale-100"
+                    }`}
+                  >
+                    {strum === "D" ? "↓" : strum === "U" ? "↑" : strum}
+                  </div>
+                ))
+              ) : (
+                <p className="text-muted-foreground">No pattern available</p>
+              )}
+            </div>
+            
+            {/* Pattern Text */}
+            {currentPattern && (
+              <p className="text-sm text-muted-foreground font-mono">
+                {currentPattern}
+              </p>
+            )}
           </div>
         </Card>
       </div>
