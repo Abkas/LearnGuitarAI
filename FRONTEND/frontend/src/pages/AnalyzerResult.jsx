@@ -228,7 +228,10 @@ export default function AnalyzerResult() {
       </div>
 
       {/* Hidden Audio Element */}
-      <audio ref={audioRef} src={`http://localhost:8000/songs/${songId}/audio`} />
+      <audio 
+        ref={audioRef} 
+        src={`http://localhost:8000/songs/${songId}/audio?token=${localStorage.getItem('access_token')}`}
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile, File, Depends, BackgroundTasks
 from fastapi.responses import FileResponse
-from ..middlewares.auth import get_current_user
+from ..middlewares.auth import get_current_user, get_current_user_from_query
 from ..middlewares.lyrics_generator import generate_lyrics
 from ..services import song_service
 from ..schemas.song_schemas import SongUploadResponse, LyricsResponse, AnalysisResponse
@@ -52,6 +52,6 @@ async def get_song_analysis(
 @router.get("/{song_id}/audio")
 async def get_song_audio(
     song_id: str,
-    current_email: str = Depends(get_current_user)
+    current_email: str = Depends(get_current_user_from_query)
 ):
     return song_service.get_song_audio(song_id, current_email)
