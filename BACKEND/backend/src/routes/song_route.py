@@ -46,3 +46,8 @@ async def get_song_analysis(
     current_email: str = Depends(get_current_user)
 ):
     return song_service.get_song_analysis(song_id, current_email)
+
+
+@router.get('/user')
+async def get_user_songs(current_email: str = Depends(get_current_user)):
+    return song_service.get_user_songs(current_email)

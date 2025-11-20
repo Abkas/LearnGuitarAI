@@ -241,3 +241,16 @@ def get_song_audio(song_id: str, current_email: str):
             "Content-Disposition": f'inline; filename="{song.get("title", "song")}.mp3"'
         }
     )
+
+
+def get_user_songs(current_email: str) -> list:
+    users_collection = get_users_collection()
+    db_user = users_collection.find_one({"email": current_email})
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    user_id = str(db_user["_id"])
+    songs_collection = get_songs_collection()
+    songs = list(songs_collection.find({"user_id": user_id}))
+    for song in songs:
+        song["_id"] = str(song["_id"])
+    return songs

@@ -1,26 +1,45 @@
-
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Camera, Play, Pause, RotateCcw } from "lucide-react"
 import { Button } from "../components/UI/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/UI/card"
-import { Input } from "../components/UI/input"
 import BottomNav from "../components/bottomnav"
 import TopNav from "../components/topnav"
-// import BackButton from "../components/UI/BackButton"
+import { getUserSongs } from "../utility/songApi"
+import { useNavigate } from "react-router-dom"
+import toast from "react-hot-toast"
 
 export default function PracticePage() {
   const [isRecording, setIsRecording] = useState(false)
-  const [formValues, setFormValues] = useState({ song: "", difficulty: "beginner" })
+  const [songs, setSongs] = useState([])
+  const [selectedSongId, setSelectedSongId] = useState("")
+  const navigate = useNavigate()
 
-  const handleChange = (event) => {
-    const { name, value } = event.target
-    setFormValues((prev) => ({ ...prev, [name]: value }))
-  }
+  useEffect(() => {
+    async function fetchSongs() {
+      try {
+        const data = await getUserSongs()
+        setSongs(data)
+      } catch (err) {
+        toast.error("Failed to fetch your songs. Please try again.",err)
+      }
+    }
+    fetchSongs()
+  }, [])
 
   const handleSetupSubmit = (event) => {
     event.preventDefault()
-    // Simulate applying setup before starting
-    setIsRecording(false)
+    if (selectedSongId) {
+      const selectedSong = songs.find(song => song._id === selectedSongId)
+      toast.success("Starting self practice!")
+      navigate("/analyzer-result", {
+        state: {
+          songId: selectedSongId,
+          title: selectedSong?.title || "Practice Song"
+        }
+      })
+    } else {
+      toast.error("Please select a song to start practice.")
+    }
   }
 
   return (
@@ -38,21 +57,28 @@ export default function PracticePage() {
             <CardTitle className="text-lg">Session Setup</CardTitle>
           </CardHeader>
           <CardContent>
-            <form className="grid grid-cols-1 gap-3 sm:grid-cols-2" onSubmit={handleSetupSubmit}>
-              <div className="sm:col-span-1">
+            <form className="grid grid-cols-1 gap-3" onSubmit={handleSetupSubmit}>
+              <div>
                 <label className="block text-sm text-muted-foreground mb-1" htmlFor="song">Song</label>
-                <Input id="song" name="song" placeholder="e.g. Yesterday - The Beatles" value={formValues.song} onChange={handleChange} />
+                {songs.length === 0 ? (
+                  <div className="text-muted-foreground text-sm py-2">Upload songs on Analyzer</div>
+                ) : (
+                  <select
+                    id="song"
+                    name="song"
+                    value={selectedSongId}
+                    onChange={e => setSelectedSongId(e.target.value)}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <option value="">Select a song...</option>
+                    {songs.map(song => (
+                      <option key={song._id} value={song._id}>{song.title}</option>
+                    ))}
+                  </select>
+                )}
               </div>
-              <div className="sm:col-span-1">
-                <label className="block text-sm text-muted-foreground mb-1" htmlFor="difficulty">Difficulty</label>
-                <select id="difficulty" name="difficulty" value={formValues.difficulty} onChange={handleChange} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  <option value="beginner">Beginner</option>
-                  <option value="intermediate">Intermediate</option>
-                  <option value="advanced">Advanced</option>
-                </select>
-              </div>
-              <div className="sm:col-span-2 flex justify-end">
-                <Button type="submit">Apply</Button>
+              <div className="flex justify-end">
+                <Button type="submit" disabled={songs.length === 0 || !selectedSongId}>Start Self Practice</Button>
               </div>
             </form>
           </CardContent>

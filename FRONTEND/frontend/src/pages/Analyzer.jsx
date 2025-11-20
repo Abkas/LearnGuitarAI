@@ -45,13 +45,14 @@ export default function AnalyzerPage() {
         // Show backend message in toast
         const message = response?.message || 'Song uploaded successfully!'
         toast.success(message)
-        
         navigate("/analyzer-result", { 
           state: { 
             songId: response.song._id,
             title: response.song.title
           } 
         });
+      } else {
+        toast.error('Song upload failed. Please try again.')
       }
 
     } catch (error) {

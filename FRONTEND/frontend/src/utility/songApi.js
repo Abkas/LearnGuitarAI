@@ -58,3 +58,13 @@ export async function getSongLyrics(songId) {
     throw new Error(error.response?.data?.detail || error.message || "Failed to get song lyrics")
   }
 }
+
+// Get all songs for the current user
+export async function getUserSongs() {
+  try {
+    const response = await axiosInstance.get('/songs/user');
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.detail || error.message || 'Failed to fetch user songs');
+  }
+}

@@ -35,6 +35,7 @@ export default function AnalyzerResult() {
         setChords(response.chords);
         setStrumming(response.strumming);
         setAudioUrl(response.audio_url || "");
+        toast.success("Song data loaded!");
       } catch (error) {
         console.error("Failed to fetch song data:", error);
         toast.error("Failed to load song data");
@@ -42,7 +43,6 @@ export default function AnalyzerResult() {
         setLoading(false);
       }
     };
-
     if (songId) {
       fetchLyrics();
     }
@@ -220,7 +220,7 @@ export default function AnalyzerResult() {
 
         {/* Chord & Strumming Display - Combined */}
         <Card className="p-4 md:p-6 bg-gradient-to-br from-primary/5 via-secondary/5 to-background">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-3">
             
             {/* Chord Circles */}
             <div className="flex items-center gap-4">
