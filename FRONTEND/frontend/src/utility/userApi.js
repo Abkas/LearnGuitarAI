@@ -1,3 +1,16 @@
+// Update user profile: POST /update
+export async function updateUser(updateData) {
+  const token = localStorage.getItem("access_token");
+  if (!token) throw new Error("No access token found");
+  try {
+    const response = await axiosInstance.post("/update", updateData, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.detail || error.message || "Update failed");
+  }
+}
 import { axiosInstance } from "../lib/axios";
 
 // Signup: POST /signup

@@ -14,7 +14,13 @@ async def verify_token(current_user: dict = Depends(get_current_user)):
 
 @router.post('/signup')
 async def signup_user(user: User):
-    return user_service.create_user(user.username, user.email, user.password)
+    return user_service.create_user(
+        user.username,
+        user.email,
+        user.password,
+        plan=user.plan if hasattr(user, 'plan') else "Free",
+        progress_level=user.progress_level if hasattr(user, 'progress_level') else "Beginner"
+    )
 
 
 @router.post('/login')
@@ -28,7 +34,9 @@ def update_user(update: UserUpdate, current_email: str = Depends(get_current_use
         current_email,
         username=update.username,
         email=update.email,
-        password=update.password
+        password=update.password,
+        plan=update.plan,
+        progress_level=update.progress_level
     )
 
 

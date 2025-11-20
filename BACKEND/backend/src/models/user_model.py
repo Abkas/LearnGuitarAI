@@ -6,4 +6,5 @@ class User(BaseModel):
     username: str
     email: EmailStr
     password: str = Field(..., min_length=6)
-
+    plan: str = Field(default="Free")
+    progress_level: str = Field(default="Beginner")

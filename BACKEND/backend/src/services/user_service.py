@@ -16,7 +16,7 @@ def verify_token_and_get_user(email: str) -> Dict[str, Any]:
     return user
 
 
-def create_user(username: str, email: str, password: str) -> Dict[str, str]:
+def create_user(username: str, email: str, password: str, plan: str = "Free", progress_level: str = "Beginner") -> Dict[str, str]:
     try:
         users = get_users_collection()
         
@@ -26,7 +26,9 @@ def create_user(username: str, email: str, password: str) -> Dict[str, str]:
         user_dict = {
             'username': username,
             'email': email,
-            'password': hash_password(password)
+            'password': hash_password(password),
+            'plan': plan,
+            'progress_level': progress_level
         }
         result = users.insert_one(user_dict)
         
@@ -56,7 +58,9 @@ def update_user_profile(
     current_email: str,
     username: Optional[str] = None,
     email: Optional[str] = None,
-    password: Optional[str] = None
+    password: Optional[str] = None,
+    plan: Optional[str] = None,
+    progress_level: Optional[str] = None
 ) -> Dict[str, str]:
     users = get_users_collection()
     db_user = users.find_one({'email': current_email})
@@ -69,7 +73,14 @@ def update_user_profile(
     if email:
         update_data['email'] = email
     if password:
+        if len(password) < 6:
+            raise HTTPException(status_code=400, detail="Password must be at least 6 characters long.")
         update_data['password'] = hash_password(password)
+
+    if plan:
+        update_data['plan'] = plan
+    if progress_level:
+        update_data['progress_level'] = progress_level
 
     if not update_data:
         raise HTTPException(status_code=400, detail="No fields to update.")
