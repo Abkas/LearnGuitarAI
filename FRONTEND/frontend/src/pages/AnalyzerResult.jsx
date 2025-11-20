@@ -218,66 +218,71 @@ export default function AnalyzerResult() {
           </div>
         </Card>
 
-        {/* Chord Display - Shows Current and Next */}
-        <Card className="p-6 bg-gradient-to-r from-primary/10 to-primary/5">
-          <div className="flex items-center justify-center gap-8">
-            {/* Current Chord */}
-            <div className="text-center">
-              <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wide">Current</p>
-              <div className="bg-primary text-primary-foreground px-8 py-4 rounded-xl text-5xl font-bold shadow-lg transform transition-transform hover:scale-105">
-                {currentChord}
-              </div>
-            </div>
+        {/* Chord & Strumming Display - Combined */}
+        <Card className="p-4 md:p-6 bg-gradient-to-br from-primary/5 via-secondary/5 to-background">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
             
-            {/* Arrow */}
-            <div className="text-muted-foreground text-2xl">→</div>
-            
-            {/* Next Chord */}
-            <div className="text-center">
-              <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wide">Next</p>
-              <div className="bg-muted text-foreground px-6 py-3 rounded-xl text-3xl font-bold border-2 border-border opacity-70">
-                {nextChord}
+            {/* Chord Circles */}
+            <div className="flex items-center gap-4">
+              {/* Current Chord Circle */}
+              <div className="relative">
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-2xl transform transition-all duration-300 hover:scale-110">
+                  <span className={`font-bold text-white text-center leading-tight ${
+                    currentChord.length > 4 ? 'text-2xl md:text-3xl' : currentChord.length > 2 ? 'text-3xl md:text-4xl' : 'text-4xl md:text-5xl'
+                  }`}>
+                    {currentChord}
+                  </span>
+                </div>
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 md:w-24 h-1 bg-green-500/20 rounded-full blur-sm"></div>
               </div>
-            </div>
-          </div>
-        </Card>
 
-        {/* Strumming Pattern Display */}
-        <Card className="p-6 bg-gradient-to-r from-secondary/10 to-secondary/5">
-          <div className="text-center space-y-4">
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wide">Strumming Pattern</p>
+              {/* Next Chord Circle */}
+              <div className="relative">
+                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-green-300 to-green-400 flex items-center justify-center shadow-lg transform transition-all duration-300">
+                  <span className={`font-bold text-white text-center leading-tight ${
+                    nextChord.length > 4 ? 'text-lg md:text-xl' : nextChord.length > 2 ? 'text-xl md:text-2xl' : 'text-2xl md:text-3xl'
+                  }`}>
+                    {nextChord}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="hidden md:block h-32 w-px bg-border"></div>
+            <div className="block md:hidden w-full h-px bg-border"></div>
+
+            {/* Strumming Pattern */}
+            <div className="flex-1 text-center space-y-2 md:space-y-3">
               {strumming?.bpm && (
-                <p className="text-sm text-muted-foreground mt-1">BPM: {strumming.bpm}</p>
+                <div className="inline-block px-3 py-1 bg-primary/10 rounded-full">
+                  <p className="text-xs font-semibold text-primary uppercase tracking-wider">
+                    {strumming.bpm} BPM
+                  </p>
+                </div>
               )}
+              
+              {/* Strumming Arrows */}
+              <div className="flex items-center justify-center gap-2 md:gap-3">
+                {strumArray.length > 0 ? (
+                  strumArray.map((strum, index) => (
+                    <div
+                      key={index}
+                      className={`text-3xl md:text-5xl font-bold transition-all duration-150 ${
+                        currentBeat === index
+                          ? "text-primary scale-125 md:scale-150 drop-shadow-2xl animate-pulse"
+                          : "text-muted-foreground/30 scale-100"
+                      }`}
+                    >
+                      {strum === "D" ? "↓" : strum === "U" ? "↑" : strum}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-muted-foreground text-sm">No pattern</p>
+                )}
+              </div>
             </div>
-            
-            {/* Strumming Arrows */}
-            <div className="flex items-center justify-center gap-4">
-              {strumArray.length > 0 ? (
-                strumArray.map((strum, index) => (
-                  <div
-                    key={index}
-                    className={`text-4xl font-bold transition-all duration-150 ${
-                      currentBeat === index
-                        ? "text-primary scale-125 drop-shadow-lg"
-                        : "text-muted-foreground/40 scale-100"
-                    }`}
-                  >
-                    {strum === "D" ? "↓" : strum === "U" ? "↑" : strum}
-                  </div>
-                ))
-              ) : (
-                <p className="text-muted-foreground">No pattern available</p>
-              )}
-            </div>
-            
-            {/* Pattern Text */}
-            {currentPattern && (
-              <p className="text-sm text-muted-foreground font-mono">
-                {currentPattern}
-              </p>
-            )}
+
           </div>
         </Card>
       </div>
