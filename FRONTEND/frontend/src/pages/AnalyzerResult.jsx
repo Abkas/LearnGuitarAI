@@ -17,6 +17,7 @@ export default function AnalyzerResult() {
   const [lyrics, setLyrics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentLyricIndex, setCurrentLyricIndex] = useState(0);
+  const [audioUrl, setAudioUrl] = useState("");
   
   const audioRef = useRef(null);
 
@@ -27,6 +28,7 @@ export default function AnalyzerResult() {
         setLoading(true);
         const response = await getSongLyrics(songId);
         setLyrics(response.lyrics);
+        setAudioUrl(response.audio_url || "");
       } catch (error) {
         console.error("Failed to fetch lyrics:", error);
         toast.error("Failed to load lyrics");
@@ -228,10 +230,13 @@ export default function AnalyzerResult() {
       </div>
 
       {/* Hidden Audio Element */}
-      <audio 
-        ref={audioRef} 
-        src={`http://localhost:8000/songs/${songId}/audio?token=${localStorage.getItem('access_token')}`}
-      />
+      {audioUrl && (
+        <audio 
+          ref={audioRef} 
+          src={audioUrl}
+          crossOrigin="anonymous"
+        />
+      )}
     </div>
   );
 }

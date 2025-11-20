@@ -1,15 +1,24 @@
 from fastapi import HTTPException, BackgroundTasks
 from typing import Dict, Any
-from fastapi.responses import FileResponse
 from bson import ObjectId
 import os
 import shutil
+import cloudinary
+import cloudinary.uploader
+from dotenv import load_dotenv
 from ..core.database import get_songs_collection, get_users_collection
 from ..middlewares.lyrics_generator import generate_lyrics
 from ..models.song_model import Song
 
+load_dotenv()
 
-# Upload directory configuration
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+)
+
+# Upload directory configuration (temporary storage before Cloudinary upload)
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -23,25 +32,50 @@ def upload_song_file(
 ) -> Dict[str, Any]:
     title = os.path.splitext(filename)[0]
     
-    # Save the file locally
-    file_path = os.path.join(UPLOAD_DIR, filename)
-    with open(file_path, "wb") as buffer:
+    # Save the file temporarily
+    temp_file_path = os.path.join(UPLOAD_DIR, filename)
+    with open(temp_file_path, "wb") as buffer:
         shutil.copyfileobj(file_content, buffer)
     
     # Resolve the user document from the email
     users_collection = get_users_collection()
     db_user = users_collection.find_one({"email": current_email})
     if not db_user:
-        if os.path.exists(file_path):
-            os.remove(file_path)
+        if os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
         raise HTTPException(status_code=404, detail="User not found")
 
     user_info = db_user
     user_info["_id"] = str(user_info["_id"])
 
+    try:
+        # Upload to Cloudinary
+        print(f"Uploading {filename} to Cloudinary...")
+        cloudinary_response = cloudinary.uploader.upload(
+            temp_file_path,
+            resource_type="video",  # Use "video" for audio files
+            folder="guitarify/songs",
+            public_id=f"{str(db_user['_id'])}_{title}",
+            overwrite=True
+        )
+        
+        cloudinary_url = cloudinary_response['secure_url']
+        cloudinary_id = cloudinary_response['public_id']
+        print(f"Uploaded successfully: {cloudinary_url}")
+        
+        # Delete temporary local file
+        if os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
+        
+    except Exception as e:
+        # If Cloudinary upload fails, clean up and raise error
+        if os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
+        raise HTTPException(status_code=500, detail=f"Failed to upload to Cloudinary: {str(e)}")
+
     song = Song(
         title=title,
-        file_path=file_path,
+        file_path=cloudinary_url, 
         user_id=str(db_user["_id"]),
         processed=False,
         analysis=None
@@ -79,8 +113,6 @@ def upload_song_file(
 
         return {"message": "Song uploaded successfully. Lyrics generation started.", "song": saved}
     except Exception as e:
-        if os.path.exists(file_path):
-            os.remove(file_path)
         raise HTTPException(status_code=500, detail=f"Failed to save song metadata: {str(e)}")
 
 
@@ -107,7 +139,8 @@ def get_song_lyrics(song_id: str, current_email: str, regenerate: bool = False) 
         return {
             "message": "Lyrics retrieved successfully",
             "song_id": song_id,
-            "lyrics": song["lyrics"]
+            "lyrics": song["lyrics"],
+            "audio_url": song.get("file_path")  # Cloudinary URL
         }
 
     # If regeneration requested or no lyrics exist, generate new ones

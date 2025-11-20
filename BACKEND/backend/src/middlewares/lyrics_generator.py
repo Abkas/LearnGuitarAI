@@ -87,17 +87,19 @@ def generate_lyrics(song_id: str, current_user: dict):
         return
         
     try:
-        if not os.path.exists(song["file_path"]):
-            print(f"generate_lyrics: audio file not found at {song['file_path']}")
+        file_path = song.get("file_path")
+        if not file_path:
+            print(f"generate_lyrics: no file_path found for song")
             songs_collection.update_one({"_id": ObjectId(song_id)}, {"$set": {"processed": False}})
             return
         
-        print(f"generate_lyrics: processing song {song['file_path']}")
+        print(f"generate_lyrics: processing song from {file_path}")
         
         # Get demo lyrics (replace with custom model call later)
         result = get_demo_lyrics()
         # TODO: Uncomment when custom model is ready
-        # result = send_audio_to_custom_model(song["file_path"])
+        # For Cloudinary URLs, you'll need to download the file first or process the URL directly
+        # result = send_audio_to_custom_model(file_path)
         
         # Extract transcription and segments from custom model result
         if result and isinstance(result, dict):
