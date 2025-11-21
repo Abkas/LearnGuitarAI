@@ -4,14 +4,13 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from src.routes.user_routes import router as user_router
 from src.routes.song_route import router as song_router
+import os 
+
 
 app = FastAPI()
 
-
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+port_origin = os.environ.get("PORT", "http://127.0.0.1:5173").strip()
+origins = [port_origin]
 
 
 app.add_middleware(
@@ -25,7 +24,8 @@ app.add_middleware(
 )
 
 app.include_router(user_router)
-app.include_router(song_router, prefix="/songs")  
+app.include_router(song_router, prefix="/songs")
+
 @app.get("/")
 def root():
     return {"message": "Hello, world!"}
