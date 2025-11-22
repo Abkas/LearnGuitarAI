@@ -14,9 +14,9 @@ load_dotenv(dotenv_path="d:/GUITARIFY/BACKEND/backend/.env")
 app = FastAPI()
 
 FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "http://127.0.0.1:5173").strip()
-    # Use BACKEND_ALLOWED_ORIGINS env variable for CORS (comma-separated)
-    allowed_origins = os.environ.get("BACKEND_ALLOWED_ORIGINS", "http://127.0.0.1:5173")
-    origins = [origin.strip() for origin in allowed_origins.split(",") if origin.strip()]
+# Use BACKEND_ALLOWED_ORIGINS env variable for CORS (comma-separated)
+allowed_origins = os.environ.get("BACKEND_ALLOWED_ORIGINS", "http://127.0.0.1:5173")
+origins = [origin.strip() for origin in allowed_origins.split(",") if origin.strip()]
 
 app.add_middleware(
     CORSMiddleware,
