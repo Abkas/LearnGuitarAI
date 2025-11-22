@@ -11,10 +11,22 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path="d:/GUITARIFY/BACKEND/backend/.env")
 
 
+
 app = FastAPI()
 
 origins = [o.strip() for o in os.getenv("BACKEND_ALLOWED_ORIGINS", "http://localhost:5173").split(",") if o.strip()]
 print("Allowed CORS origins:", origins)
+
+# Debug middleware to print incoming request Origin header
+from starlette.middleware.base import BaseHTTPMiddleware
+class DebugOriginMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        origin = request.headers.get("origin")
+        print(f"Incoming request Origin: {origin}")
+        response = await call_next(request)
+        return response
+
+app.add_middleware(DebugOriginMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
