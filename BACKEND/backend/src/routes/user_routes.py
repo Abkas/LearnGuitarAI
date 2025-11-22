@@ -24,9 +24,8 @@ async def signup_user(user: User):
 
 
 @router.post('/login')
-def login_user(user: UserLogin):
+async def login_user(user: UserLogin):
     return user_service.authenticate_user(user.email, user.password)
-
 
 @router.post('/update')
 def update_user(update: UserUpdate, current_email: str = Depends(get_current_user)):
