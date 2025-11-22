@@ -9,8 +9,8 @@ import os
 
 app = FastAPI()
 
-port_origin = os.environ.get("PORT", "http://127.0.0.1:5173").strip()
-origins = [port_origin]
+frontend_origin = os.environ.get("FRONTEND_ORIGIN", "http://127.0.0.1:5173").strip()
+origins = [frontend_origin]
 
 
 app.add_middleware(
