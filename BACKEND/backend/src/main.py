@@ -8,7 +8,7 @@ from src.routes.song_route import router as song_router
 import os
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path="d:/GUITARIFY/BACKEND/backend/.env")
+load_dotenv()
 
 
 

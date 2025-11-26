@@ -6,7 +6,7 @@ from fastapi import Depends, HTTPException, Query
 from fastapi.security import OAuth2PasswordBearer
 import os
 
-load_dotenv(dotenv_path="d:/GUITARIFY/BACKEND/backend/src/.env")
+load_dotenv()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
