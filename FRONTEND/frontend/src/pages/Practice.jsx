@@ -8,9 +8,17 @@ import { getUserSongs } from "../utility/songApi"
 import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
 
+function normalizeSongs(payload) {
+  if (Array.isArray(payload)) return payload
+
+  const songs = payload?.songs ?? payload?.data ?? payload?.items
+  return Array.isArray(songs) ? songs : []
+}
+
 export default function PracticePage() {
   const [isRecording, setIsRecording] = useState(false)
   const [songs, setSongs] = useState([])
+  const [isLoadingSongs, setIsLoadingSongs] = useState(true)
   const [selectedSongId, setSelectedSongId] = useState("")
   const navigate = useNavigate()
 
@@ -18,9 +26,11 @@ export default function PracticePage() {
     async function fetchSongs() {
       try {
         const data = await getUserSongs()
-        setSongs(data)
+        setSongs(normalizeSongs(data))
       } catch (err) {
-        toast.error("Failed to fetch your songs. Please try again.",err)
+        toast.error(err.message || "Failed to fetch your songs. Please try again.")
+      } finally {
+        setIsLoadingSongs(false)
       }
     }
     fetchSongs()
@@ -60,7 +70,9 @@ export default function PracticePage() {
             <form className="grid grid-cols-1 gap-3" onSubmit={handleSetupSubmit}>
               <div>
                 <label className="block text-sm text-muted-foreground mb-1" htmlFor="song">Song</label>
-                {songs.length === 0 ? (
+                {isLoadingSongs ? (
+                  <div className="text-muted-foreground text-sm py-2">Loading your songs...</div>
+                ) : songs.length === 0 ? (
                   <div className="text-muted-foreground text-sm py-2">Upload songs on Analyzer</div>
                 ) : (
                   <select
@@ -78,7 +90,9 @@ export default function PracticePage() {
                 )}
               </div>
               <div className="flex justify-end">
-                <Button type="submit" disabled={songs.length === 0 || !selectedSongId}>Start Self Practice</Button>
+                <Button type="submit" disabled={isLoadingSongs || songs.length === 0 || !selectedSongId}>
+                  Start Self Practice
+                </Button>
               </div>
             </form>
           </CardContent>
