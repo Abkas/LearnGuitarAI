@@ -1,9 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { verifyToken, logout } from "../utility/userApi";
 
 export default function TopNav() {
-  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
 

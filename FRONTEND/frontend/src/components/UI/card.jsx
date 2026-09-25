@@ -1,4 +1,3 @@
-// Simple Card and CardContent demo components
 export function Card({ children, className = "", ...props }) {
   return (
     <div className={`rounded-lg shadow-soft bg-card border border-border ${className}`} {...props}>
