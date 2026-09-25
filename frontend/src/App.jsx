@@ -1,14 +1,8 @@
-import { useState } from 'react'
-import HomePage from './pages/HomePage'
+import AppRoutes from './Routes/Routes'
 import './App.css'
 
-
 function App() {
-  return (
-    <>
-      <HomePage />
-    </>
-  )
+  return <AppRoutes />
 }
 
 export default App

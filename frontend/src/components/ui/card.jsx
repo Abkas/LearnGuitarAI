@@ -1,7 +1,6 @@
-// Simple Card and CardContent demo components
 export function Card({ children, className = "", ...props }) {
   return (
-    <div className={`rounded-lg shadow-md bg-white p-4 ${className}`} {...props}>
+    <div className={`rounded-lg ${className}`} {...props}>
       {children}
     </div>
   );
